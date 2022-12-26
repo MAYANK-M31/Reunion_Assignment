@@ -30,7 +30,7 @@ const Follow = require("./Routes/follow");
 const UserProfile = require("./Routes/profile");
 const Post = require("./Routes/posts");
 const Like = require("./Routes/like");
-
+const Comment = require("./Routes/comment");
 
  
 App.use("/api/authenticate", SignIn);
@@ -38,6 +38,8 @@ App.use("/api", Follow);
 App.use("/api/user", UserProfile);
 App.use("/api", Post);
 App.use("/api", Like);
+App.use("/api/comment", Comment);
+
 
 
 
