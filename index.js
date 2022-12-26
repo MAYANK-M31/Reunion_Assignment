@@ -28,12 +28,15 @@ db.once("open", () => console.log("connected to database"));
 const SignIn = require("./Routes/signin");
 const Follow = require("./Routes/follow");
 const UserProfile = require("./Routes/profile");
+const Post = require("./Routes/posts");
 
 
  
 App.use("/api/authenticate", SignIn);
 App.use("/api", Follow);
 App.use("/api/user", UserProfile);
+App.use("/api/posts", Post);
+
 
 
  

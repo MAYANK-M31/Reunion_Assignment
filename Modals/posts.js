@@ -3,7 +3,7 @@ const { Schema } = mongoose;
  
 const PostsSchema = new Schema(
  {
-   id: {
+   uuid: {
      type: String,
      trim: true,
      index: true,
