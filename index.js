@@ -35,7 +35,7 @@ const Post = require("./Routes/posts");
 App.use("/api/authenticate", SignIn);
 App.use("/api", Follow);
 App.use("/api/user", UserProfile);
-App.use("/api/posts", Post);
+App.use("/api", Post);
 
 
 

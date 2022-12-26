@@ -5,7 +5,7 @@ const { AuthenticateToken } = require("../Middlewares/AuthenticateToken");
 const { Error, Success } = require("../Modules/Response");
 const Posts = require("../Modals/posts");
 
-router.post("/", AuthenticateToken, async (req, res) => {
+router.post("/posts", AuthenticateToken, async (req, res) => {
   try {
     const schema = Joi.object().keys({
       title: Joi.string().trim().required(),
@@ -46,7 +46,7 @@ router.post("/", AuthenticateToken, async (req, res) => {
   }
 });
 
-router.delete("/:id", AuthenticateToken, async (req, res) => {
+router.delete("/posts/:id", AuthenticateToken, async (req, res) => {
   try {
     const schema = Joi.string().trim().required();
     const { error, value } = schema.validate(req.params.id);
@@ -57,7 +57,7 @@ router.delete("/:id", AuthenticateToken, async (req, res) => {
     Posts.deleteOne({ $and: [{ uuid: uuid }, { _id: value }] })
       .then(({ deletedCount }) => {
         if (deletedCount == 0) {
-          return Error(res, "Failed to delete Post", 500, "UNAUTHORIZED");
+          return Error(res, "Failed to delete Post", 401, "UNAUTHORIZED");
         }
         return Success(res, "Post Deleted successfully");
       })
