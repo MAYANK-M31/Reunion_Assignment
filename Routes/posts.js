@@ -122,4 +122,55 @@ router.get("/posts/:id", async (req, res) => {
   }
 });
 
+router.get("/all_posts", AuthenticateToken, async (req, res) => {
+  try {
+    const { uuid } = req.user;
+
+    Posts.aggregate([
+      {
+        $match: {
+          uuid: uuid,
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "comments",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          title:1,
+          desc:"$description",
+          created_at:1,
+          likes: "$likes",
+          comments: "$comments",
+        },
+      },
+    ])
+      .then((data) => {
+        return Success(res, "success", data);
+      })
+      .catch((err) => {
+        console.log(err);
+        return Error(res, err);
+      });
+  } catch (err) {
+    console.log(err);
+    return Error(res, err);
+  }
+});
+
 module.exports = router;
