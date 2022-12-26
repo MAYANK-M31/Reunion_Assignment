@@ -10,7 +10,7 @@ const FollowingSchema = new Schema(
      index: true,
      required: true,
    },
-   following_id: {
+   follow_id: {
      type: String,
      trim: true,
      required: true,

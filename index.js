@@ -26,8 +26,12 @@ db.once("open", () => console.log("connected to database"));
  
 // ROUTES
 const SignIn = require("./Routes/signin");
+const Follow = require("./Routes/follow");
+
  
 App.use("/api/authenticate", SignIn);
+App.use("/api", Follow);
+
  
 App.get("/", (req, res) => {
  res.status(200).send("Welcome to NoApp API");
