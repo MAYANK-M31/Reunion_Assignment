@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Like = require("../Modals/likes");
 const Posts = require("../Modals/posts");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const users = require("../Modals/users");
 const Joi = require("joi");
@@ -18,10 +20,12 @@ router.post("/like/:id", AuthenticateToken, async (req, res) => {
     if (error !== undefined) return Error(res, "Bad Request Parameters");
 
     Like.updateOne(
-      { $ans: [{ uuid: uuid }, { post_id: value }] },
+      { $and: [{ uuid: uuid }, { post_id: value }] },
+      { uuid: uuid, post_id: value },
       { upsert: true }
     )
       .then((r) => {
+        console.log(r);
         Success(res, "Post liked successfully");
       })
       .catch((e) => {

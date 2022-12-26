@@ -4,6 +4,8 @@ const Joi = require("joi");
 const { AuthenticateToken } = require("../Middlewares/AuthenticateToken");
 const { Error, Success } = require("../Modules/Response");
 const Posts = require("../Modals/posts");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 router.post("/posts", AuthenticateToken, async (req, res) => {
   try {
@@ -70,6 +72,48 @@ router.delete("/posts/:id", AuthenticateToken, async (req, res) => {
   }
 });
 
+router.get("/posts/:id", async (req, res) => {
+  try {
+    const schema = Joi.string().trim().required();
+    const { error, value } = schema.validate(req.params.id);
+    if (error !== undefined) return Error(res, "Bad Request Parameters");
 
+    Posts.aggregate([
+      {
+        $match: {
+          _id: ObjectId(value),
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "post_id",
+          as: "comments",
+        },
+      },
+      {
+        $project:{
+          _id:1,
+          likes:{$size:"$likes"},
+          comments:{$size:"$comments"}
+        }
+      }
+    ]).then((r) => {
+      return Success(res, "success", r);
+    });
+  } catch (err) {
+    console.log(err);
+    return Error(res, err);
+  }
+});
 
 module.exports = router;

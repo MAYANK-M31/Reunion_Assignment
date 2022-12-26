@@ -10,7 +10,7 @@ const LikesSchema = new Schema(
      required: true,
    },
    post_id: {
-     type: String,
+     type: Schema.ObjectId,
      trim: true,
      index: true,
      required: true,
