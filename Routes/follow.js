@@ -1,14 +1,10 @@
-const bcryptjs = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
-const jwt = require("jsonwebtoken");
-
 const express = require("express");
-const Joi = require("joi");
-const { AuthenticateToken } = require("../Middlewares/AuthenticateToken");
 const router = express.Router();
 const Follow = require("../Modals/following");
-const { Error, Success } = require("../Modules/Response");
 const users = require("../Modals/users");
+const Joi = require("joi");
+const { AuthenticateToken } = require("../Middlewares/AuthenticateToken");
+const { Error, Success } = require("../Modules/Response");
 
 const schema = Joi.string().trim().required();
 
