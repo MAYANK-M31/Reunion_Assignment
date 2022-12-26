@@ -70,4 +70,6 @@ router.delete("/posts/:id", AuthenticateToken, async (req, res) => {
   }
 });
 
+
+
 module.exports = router;
