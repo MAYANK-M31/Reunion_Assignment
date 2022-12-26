@@ -15,7 +15,6 @@ App.use(cors());
  
 //CONNECT TO DATABASE
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.bulz383.mongodb.net/reunion?retryWrites=true&w=majority`;
- 
 mongoose.connect(uri, {
  useNewUrlParser: true,
  useUnifiedTopology: true,
@@ -50,6 +49,7 @@ App.get("/", (req, res) => {
 });
 App.listen(PORT, async () => {
  console.log("Server started on port", PORT);
+ 
 });
 
  
