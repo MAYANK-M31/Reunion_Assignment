@@ -155,7 +155,7 @@ router.get("/all_posts", AuthenticateToken, async (req, res) => {
           title:1,
           desc:"$description",
           created_at:1,
-          likes: "$likes",
+          likes: {$size:"$likes"},
           comments: "$comments",
         },
       },
