@@ -19,7 +19,7 @@ function AuthenticateToken(req, res, next) {
       admin
         .findOne({
           uuid: data?.uuid,
-        },{uuid:1})
+        })
         .then((detail) => {
           if(!detail) return Error(res, "Invalid Token", 403,"INVALID_USER");
           req.user = detail;
