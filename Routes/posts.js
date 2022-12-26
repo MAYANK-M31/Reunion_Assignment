@@ -159,6 +159,7 @@ router.get("/all_posts", AuthenticateToken, async (req, res) => {
           comments: "$comments",
         },
       },
+      {$sort:{created_at:1}}
     ])
       .then((data) => {
         return Success(res, "success", data);
