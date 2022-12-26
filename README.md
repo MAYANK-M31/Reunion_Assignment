@@ -5,7 +5,8 @@
 ### API HOSTED URL:- https://reunion-api.onrender.com/
 
 ## RUN
-### Docker Run Command: docker-compose up --build OR
+### Docker Run Command: docker-compose up --build
+#### OR
 ### Node Run Command: npm start
 
 ##TESTING
