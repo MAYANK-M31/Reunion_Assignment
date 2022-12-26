@@ -10,4 +10,4 @@
 ### Node Run Command: npm start
 
 ## TESTING
-### npm test
+### Command:- npm test
