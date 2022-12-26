@@ -19,18 +19,22 @@ router.post("/like/:id", AuthenticateToken, async (req, res) => {
 
     if (error !== undefined) return Error(res, "Bad Request Parameters");
 
-    Like.updateOne(
-      { $and: [{ uuid: uuid }, { post_id: value }] },
-      { uuid: uuid, post_id: value },
-      { upsert: true }
-    )
-      .then((r) => {
-        console.log(r);
-        Success(res, "Post liked successfully");
-      })
-      .catch((e) => {
-        Error(res, "Failed to Like Post", 500, "SOMETHING_WENT_WRONG");
-      });
+    Posts.findById(ObjectId(value)).then((exist) => {
+      if (!exist) return Error(res, "Post does not exist", 404);
+      Like.updateOne(
+        { $and: [{ uuid: uuid }, { post_id: value }] },
+        { uuid: uuid, post_id: value },
+        { upsert: true }
+      )
+        .then((r) => {
+          Success(res, "Post liked successfully");
+        })
+        .catch((e) => {
+          Error(res, "Failed to Like Post", 500, "SOMETHING_WENT_WRONG");
+        });
+    }).catch((e)=>{
+      return Error(res, err);
+    })
   } catch (err) {
     console.log(err);
     return Error(res, err);

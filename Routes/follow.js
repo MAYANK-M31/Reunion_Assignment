@@ -14,6 +14,7 @@ router.post("/follow/:id", AuthenticateToken, async (req, res) => {
     const uuid = req.user.uuid;
 
     if (error !== undefined) return Error(res, "Bad Request Parameters");
+    if (value == uuid) return Error(res, "Cannot Follow Self");
 
     users.findOne({ uuid: value }, { uuid: 1 }).then((follow_id) => {
       if (!follow_id?.uuid) return Error(res, "User does not exist", 404);
@@ -46,9 +47,7 @@ router.post("/unfollow/:id", AuthenticateToken, async (req, res) => {
     users.findOne({ uuid: value }, { uuid: 1 }).then((follow_id) => {
       if (!follow_id?.uuid) return Error(res, "User does not exist", 404);
 
-      Follow.deleteOne(
-        { follow_id: follow_id?.uuid }
-      )
+      Follow.deleteOne({ follow_id: follow_id?.uuid })
         .then((r) => {
           Success(res, "Unfollowed user successfully");
         })
@@ -56,7 +55,6 @@ router.post("/unfollow/:id", AuthenticateToken, async (req, res) => {
           Error(res, "Unable to unfollow", 500, "SOMETHING_WENT_WRONG");
         });
     });
-
   } catch (err) {
     console.log(err);
     return Error(res, err);
