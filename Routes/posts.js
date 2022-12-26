@@ -101,15 +101,21 @@ router.get("/posts/:id", async (req, res) => {
         },
       },
       {
-        $project:{
-          _id:1,
-          likes:{$size:"$likes"},
-          comments:{$size:"$comments"}
-        }
-      }
-    ]).then((r) => {
-      return Success(res, "success", r);
-    });
+        $project: {
+          _id: 0,
+          id: "$_id",
+          likes: { $size: "$likes" },
+          comments: { $size: "$comments" },
+        },
+      },
+    ])
+      .then((data) => {
+        return Success(res, "success", data);
+      })
+      .catch((err) => {
+        console.log(err);
+        return Error(res, err);
+      });
   } catch (err) {
     console.log(err);
     return Error(res, err);
