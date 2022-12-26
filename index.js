@@ -27,10 +27,14 @@ db.once("open", () => console.log("connected to database"));
 // ROUTES
 const SignIn = require("./Routes/signin");
 const Follow = require("./Routes/follow");
+const UserProfile = require("./Routes/profile");
+
 
  
 App.use("/api/authenticate", SignIn);
 App.use("/api", Follow);
+App.use("/api/user", UserProfile);
+
 
  
 App.get("/", (req, res) => {

@@ -21,6 +21,10 @@ const UserSchema = new Schema(
      trim: true,
      required: true,
    },
+   username: {
+    type: String,
+    trim: true,
+  },
  },
  { timestamps: { createdAt: "created_at" } },
  { collection: "users" }
