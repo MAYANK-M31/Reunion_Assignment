@@ -48,7 +48,9 @@ router.post("/unfollow/:id", AuthenticateToken, async (req, res) => {
       if (!follow_id?.uuid) return Error(res, "User does not exist", 404);
 
       Follow.deleteOne({ follow_id: follow_id?.uuid })
-        .then((r) => {
+        .then(({ deletedCount }) => {
+          if (deletedCount == 0)
+            return Error(res, "cannot unfollow", 404, "INVALID_REUEST");
           Success(res, "Unfollowed user successfully");
         })
         .catch((e) => {

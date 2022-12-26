@@ -1,8 +1,9 @@
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-const { response } = require("../index");
 let server = require("../index");
 const Post = require("../Modals/posts");
+const Follow = require("../Modals/following");
+const Like = require("../Modals/likes");
 
 // Assertion Style
 chai.should();
@@ -25,7 +26,7 @@ describe("ReUnion Assignment API", () => {
   // runs before each test
 
   var Token = "";
-  it("It should get ACCESS TOKEN", (done) => {
+  it("GET ACCESS TOKEN : POST /api/authenticate", (done) => {
     chai
       .request(server)
       .post("/api/authenticate")
@@ -39,7 +40,7 @@ describe("ReUnion Assignment API", () => {
       });
   });
 
-  it("It should get post created", (done) => {
+  it("CREATE NEW POST : POST /api/posts", (done) => {
     chai
       .request(server)
       .post("/api/posts")
@@ -60,7 +61,7 @@ describe("ReUnion Assignment API", () => {
       });
   });
 
-  it("Not sending title in POST", (done) => {
+  it("Not sending title in POST : POST /api/posts", (done) => {
     chai
       .request(server)
       .post("/api/posts")
@@ -69,10 +70,94 @@ describe("ReUnion Assignment API", () => {
       .send({ description: "lorep epsum new test" })
       .end((error, response) => {
         response.should.not.have.status(200);
+
         done();
       });
   });
 
-  
+  it("Cannot Follow Self : POST /api/follow", (done) => {
+    const UUID = "7cc80f86-0d9c-43f2-90aa-3be3ae0889f1";
+    chai
+      .request(server)
+      .post("/api/follow/" + UUID)
+      .set("content-type", "application/x-www-form-urlencoded")
+      .set("Authorization", "Bearer " + Token)
+      .end((error, response) => {
+        response.should.not.have.status(200);
+        Follow.findOne({ $and: [{ follow_id: UUID }, { uuid: UUID }] }).then(
+          (exist) => {
+            if (!exist) {
+              done();
+            }
+          }
+        );
+      });
+  });
 
+  it("Cannot Unlike Unliked Post : POST /api/unlike/", (done) => {
+    const PostId = "63a9be18e1951da44a6971b9";
+    chai
+      .request(server)
+      .post("/api/unlike/" + PostId)
+      .set("content-type", "application/x-www-form-urlencoded")
+      .set("Authorization", "Bearer " + Token)
+      .end((error, response) => {
+        response.should.not.have.status(200);
+        Like.findOne({
+          $and: [
+            { post_id: PostId },
+            { uuid: "bc95010a-a453-43d5-bc74-f91cb2ef0d0d" },
+          ],
+        }).then((exist) => {
+          if (!exist) {
+            done();
+          }
+        });
+      });
+  });
+
+  it("Liking Post do not exist : POST: /api/like", (done) => {
+    const PostId = "63a9be29e1951da44a6971b9";
+    chai
+      .request(server)
+      .post("/api/like/" + PostId)
+      .set("content-type", "application/x-www-form-urlencoded")
+      .set("Authorization", "Bearer " + Token)
+      .end((error, response) => {
+        response.should.not.have.status(200);
+        Like.findOne({
+          $and: [
+            { post_id: PostId },
+            { uuid: "bc95010a-a453-43d5-bc74-f91cb2ef0d0d" },
+          ],
+        }).then((exist) => {
+          if (!exist) {
+            done();
+          }
+        });
+      });
+  });
+
+  it("Getting all Post auth user : GET: /api/all_posts", (done) => {
+    chai
+      .request(server)
+      .get("/api/all_posts")
+      .set("content-type", "application/x-www-form-urlencoded")
+      .set("Authorization", "Bearer " + Token)
+      .end((error, response) => {
+        response.should.have.status(200);
+        var countResponse = response.body.data;
+        countResponse.should.be.a("array");
+
+        Post.find({
+          $and: [{ uuid: "7cc80f86-0d9c-43f2-90aa-3be3ae0889f1" }],
+        })
+          .count()
+          .then((count) => {
+            if (count == countResponse.length) {
+              done();
+            }
+          });
+      });
+  });
 });
